@@ -1,9 +1,10 @@
-from flask import Flask,request
+from flask import Flask, request
 import openai
 
 app = Flask(__name__)
-openai.api_key="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"
+openai.api_key = "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"
 model_engine = "text-davinci-003"
+
 
 @app.route('/hello', methods=['GET'])
 def hello():
@@ -18,5 +19,11 @@ def hello():
     )
     return completion.choices[0].text
 
+
+@app.route('/test', methods=['GET'])
+def test():
+    return "hello world"
+
+
 if __name__ == '__main__':
-    app.run(port=8000)
+    app.run(host="0.0.0.0", port=8000)
