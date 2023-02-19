@@ -29,6 +29,38 @@ def chat():
     result = request.args.get('result')
     return render_template("index.html", result=result)
 
+
+@app.route('/chatgpt', methods=['POST'])
+def chatgpt():
+    prompt = request.form['prompt']
+    print(prompt)
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.6
+    )
+    print(response.choices[0].text)
+    return response.choices[0].text
+
+@app.route('/chatgpt', methods=['GET'])
+def chatgptget():
+    prompt = request.args.get('prompt')
+    print(prompt)
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=1024,
+        n=1,
+        stop=None,
+        temperature=0.6
+    )
+    print(response.choices[0].text)
+    return response.choices[0].text
+
+
 @app.route('/test', methods=['GET'])
 def test():
     print(os.getcwd())
