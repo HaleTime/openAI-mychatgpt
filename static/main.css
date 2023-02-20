@@ -34,12 +34,13 @@ h3 {
   line-height: 40px;
   font-weight: bold;
   color: #202123;
-  margin: 16px 0 40px;
+  margin: 16px 0 20px;
 }
 form {
   display: flex;
   flex-direction: column;
   width: 320px;
+  margin-top: 20px;
 }
 input[type="text"] {
   padding: 12px 16px;
@@ -61,6 +62,10 @@ input[type="submit"] {
   cursor: pointer;
 }
 .result {
+  font-weight: bold;
+  margin-top: 40px;
+}
+.image {
   font-weight: bold;
   margin-top: 40px;
 }

@@ -15,7 +15,16 @@
     <input type="text" name="prompt" placeholder="Say something ..." required />
     <input type="submit" value="Chat!" />
   </form>
+  <form action="/image" method="post" class="form">
+    <input type="text" name="prompt" placeholder="Describe a picture ..." required />
+    <input type="submit" value="Generate!" />
+  </form>
   {% if result %}
   <div class="result">{{ result }}</div>
+  {% endif %}
+  {% if url %}
+  <div class="image">
+    <img src="{{ url }}" />
+  </div>
   {% endif %}
 </body>
