@@ -1,17 +1,18 @@
 import os
 
 from flask import Flask, redirect, render_template, request, url_for
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 import openai
-import logging
+import log
+
+import MessageApi
+from MessageApi import message_api
+from login import login_api
+
 
 app = Flask(__name__)
-# limiter = Limiter(
-#     app,
-#     key_func=get_remote_address(),
-#     default_limits=['1 per minute']
-# )
+# 注册其他api到主flask里面
+app.register_blueprint(message_api)
+app.register_blueprint(login_api)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
@@ -25,8 +26,12 @@ def index():
 def chat():
     if request.method == 'POST':
         prompt = request.form['prompt']
+        log.logger.info(prompt)
+        MessageApi.create_message(None, prompt, True)
         response = chatbyapikey(prompt)
-        print(response.choices[0].text)
+        answer = response.choices[0].text
+        log.logger.info(answer)
+        MessageApi.create_message(None, prompt, False)
         return redirect(url_for("chat", result=response.choices[0].text))
     result = request.args.get('result')
     return render_template("index.html", result=result)
