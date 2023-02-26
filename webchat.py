@@ -2,7 +2,7 @@ import openai
 from flask import redirect, render_template, request, url_for, Blueprint
 
 import message
-from chatgpt import chat
+from chatgpt import chatgpt
 from log import logger
 
 webchat_api = Blueprint('webchat_api', __name__)
@@ -14,7 +14,7 @@ def chat():
         prompt = request.form['prompt']
         logger.info(prompt)
         message.create_message(None, prompt, True, request.headers['X-Real-IP'])
-        response = chat(prompt)
+        response = chatgpt(prompt)
         answer = response.choices[0].text
         logger.info(answer)
         message.create_message(None, answer, False, request.headers['X-Real-IP'])

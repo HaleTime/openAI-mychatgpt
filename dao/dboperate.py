@@ -28,7 +28,7 @@ class MySqlOperator:
     def searchbysql(self, sql):
         global cursor
         try:
-            cursor = self.conn.cursor()
+            cursor = self.conn.cursor(dictionary=True)
             cursor.execute(sql)
             return cursor.fetchall()
         finally:

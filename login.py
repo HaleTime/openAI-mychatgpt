@@ -5,6 +5,7 @@ import uuid
 import jwt
 import time
 import threadlocal
+import user
 
 login_api = Blueprint('login_api', __name__)
 secret = "b10ce399d9854d7e927e8e8c96b28363"
@@ -13,15 +14,17 @@ algorithm = "HS256"
 
 
 def login_interceptor():
-    jwt_token = request.authorization
+    jwt_token = getToken()
     if jwt_token:
         try:
+            print(jwt_token)
             # 解码 JWT token，返回字典格式的头部信息和载荷信息
-            payload = jwt.decode(jwt_token, secret, algorithms=algorithm)
+            payload = jwt.decode(jwt_token, secret, algorithms=[algorithm])
 
             # 取出 token 中的用户 ID，做进一步验证等操作
             openid = payload['openid']
-            threadlocal.set_variable(openid)
+            current_user = user.get(None, openid)[0]
+            threadlocal.set_user(current_user)
             # 如果需要验证 token 是否过期等信息，也可以在这里进行验证
             # ...
 
@@ -56,7 +59,7 @@ def login():
     search = f'select * from b_user where open_id = \'{openid}\''
     operator = dao.dboperate.MySqlOperator()
     searchbysql = operator.searchbysql(search)
-    jwt_token = jwt.encode(auth_info, session_key, algorithm=algorithm)
+    jwt_token = jwt.encode(auth_info, secret, algorithm=algorithm)
     print(jwt_token)
     if any(searchbysql):
         return jwt_token
@@ -65,3 +68,16 @@ def login():
     operator = dao.dboperate.MySqlOperator()
     operator.operatebysql(sql, val)
     return jwt_token
+
+
+# 手动解析token，request.authorization只支持基于 HTTP Basic Auth 的认证信息
+def getToken():
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        try:
+            auth_token = auth_header.split(" ")[1]
+        except IndexError:
+            return "Invalid token supplied", 401
+    else:
+        auth_token = None
+    return auth_token

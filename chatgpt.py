@@ -6,7 +6,7 @@ engine_davinci3 = "text-davinci-003"
 # 更快
 engine_davinci2 = "text-davinci-002"
 
-def chat(prompt):
+def chatgpt(prompt):
     try:
         response = openai.Completion.create(
             engine=engine_davinci3,
